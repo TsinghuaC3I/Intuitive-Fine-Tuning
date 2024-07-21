@@ -1,0 +1,15 @@
+# do DPO preference-based training
+name: ift
+
+# Temporal Residual Connection
+min_lambda: 0.2
+max_lambda: 0.2
+lambda_disturb: null
+disturb_std: 0.5
+lambda_schedule: null
+
+# Relation Propagation
+gamma: 0.95
+propagation_type: loss
+propagation_side: left
+propagation_norm: L1

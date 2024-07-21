@@ -1,0 +1,10 @@
+name_or_path: /root/pubmodels/Qwen2-0.5B
+tokenizer_name_or_path: null
+archive: null
+block_name: Qwen2DecoderLayer
+
+policy_dtype: bfloat16
+fsdp_policy_mp: bfloat16
+reference_dtype: bfloat16
+
+lora: false
