@@ -98,7 +98,7 @@ def main(config: DictConfig):
         **model_kwargs)
     disable_dropout(policy)
 
-    if config.loss.name in {'sft', 'dpo', 'ipo', 'kto', 'orpo'} and config.loss.reference_free is False:
+    if config.loss.name in {'dpo', 'ipo', 'kto', 'orpo'} and config.loss.reference_free is False:
         print('building reference model')
         reference_model_dtype = getattr(torch, config.model.reference_dtype)
         reference_model = transformers.AutoModelForCausalLM.from_pretrained(
@@ -106,42 +106,6 @@ def main(config: DictConfig):
         disable_dropout(reference_model)
         
         policy_weak = None
-    elif config.loss.name == 'gpo': # TODO: for debug, can be simplified
-        # equal to rejected_from == 'weak', but using more computational resources
-        assert not (config.loss.weak_free and config.loss.rejected_from == 'reference')
-        # then we will lose the reject sample source
-        assert not (config.loss.weak_free and config.loss.reference_free)
-        # TODO: the logic need to be checked
-        if config.loss.weak_free or (config.loss.reference_free is False) or (config.loss.kl_free is False) or (config.loss.rejected_from == 'reference'):
-            print('building reference model')
-            reference_model_dtype = getattr(torch, config.model.reference_dtype)
-            reference_model = transformers.AutoModelForCausalLM.from_pretrained(
-                config.model.name_or_path, 
-                cache_dir=get_local_dir(config.local_dirs), 
-                low_cpu_mem_usage=True, 
-                torch_dtype=reference_model_dtype, 
-                trust_remote_code=True, 
-                attn_implementation="flash_attention_2" if config.flash_attn else None,
-                **model_kwargs)
-            disable_dropout(reference_model)
-        else:
-            reference_model = None
-        
-        if config.loss.weak_free is False:
-            print('building weak policy')
-            policy_weak_dtype = getattr(torch, config.model.policy_dtype)
-            policy_weak = transformers.AutoModelForCausalLM.from_pretrained(
-                config.model.name_or_path, 
-                cache_dir=get_local_dir(config.local_dirs), 
-                low_cpu_mem_usage=True, 
-                torch_dtype=policy_weak_dtype, 
-                trust_remote_code=True, 
-                attn_implementation="flash_attention_2" if config.flash_attn else None,
-                **model_kwargs)
-            disable_dropout(policy_weak)
-        else:
-            policy_weak = None
-        
     else:
         policy_weak = None
         reference_model = None
