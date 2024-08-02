@@ -658,33 +658,6 @@ class BasicTrainer(object):
         
         if self.config.checkpoint_path is not None:
             self.load_checkpoint(checkpoint_path=self.config.checkpoint_path)
-            # rank0_print(f'Loading checkpoint from {self.config.checkpoint_path}')
-            # policy = torch.load(f'{self.config.checkpoint_path}/policy.pt', map_location='cpu')
-            # self.policy.load_state_dict(policy['state'])
-            # optimizer = torch.load(f'{self.config.checkpoint_path}/optimizer.pt', map_location='cpu')
-            # # keep the keys of the optimizer['state']['param_groups'] the same as self.optimizer.state_dict()['param_groups']
-            
-            # # for key_trainer, key_checkpoint in zip(self.optimizer.state_dict()['param_groups'][0]['params'], optimizer['state']['param_groups'][0]['params']):
-            # #     optimizer['state']['state'][key_trainer] = optimizer['state']['state'][key_checkpoint]
-            # #     optimizer['state']['state'].pop(key_checkpoint)
-            # # optimizer['state']['param_groups'][0]['params'] = self.optimizer.state_dict()['param_groups'][0]['params']
-            
-            # self.optimizer.load_state_dict(FSDP.optim_state_dict_to_load(self.policy, self.optimizer, optimizer['state']))
-            
-            # # self.optimizer.load_state_dict(optimizer['state'])
-            # # # * debug *
-            # # # # state, param_groups
-            # # rank0_print(self.optimizer.state_dict()['state'])
-            # # rank0_print(self.optimizer.state_dict()['param_groups'])
-            # # exit()
-            # # # * debug *
-            
-            # lr_scheduler = torch.load(f'{self.config.checkpoint_path}/scheduler.pt', map_location='cpu')
-            # self.lr_scheduler.load_state_dict(lr_scheduler['state'])
-
-            # self.checkpoint_example_idx = policy['step_idx']
-            # self.checkpoint_batch_idx = policy['step_idx'] // self.config.batch_size
-            # rank0_print(f'Loaded checkpoint from {self.config.checkpoint_path} at step {self.checkpoint_example_idx}')
         
         self.step_idx = self.checkpoint_example_idx if self.config.checkpoint_path is not None else 0
         
